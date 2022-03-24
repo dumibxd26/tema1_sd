@@ -1,4 +1,15 @@
-// #include "declarations.h"
+#include "operations.h"
+
+
+ds_deck *goto_deck(ds_deck_list *deck_list, int pos)
+{
+    ds_deck *deck = deck_list->deck_head;
+
+    while(pos--)
+        deck = deck->next;
+
+    return deck;
+}
 
 // int DECK_NUMBER(ds_deck_list *deck_list)
 // {

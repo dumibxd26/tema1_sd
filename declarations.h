@@ -1,7 +1,7 @@
 #ifndef declarations
 #define declarations
 
-#define BUFF_SIZE 1000
+#define BUFF_SIZE 100
 
 #include "errors.h"
 #include "stddef.h"

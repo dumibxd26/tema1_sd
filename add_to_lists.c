@@ -20,12 +20,14 @@ char symbol_conversion(char *symbol)
     if(strcmp(symbol, "DIAMOND"))
         return 3;
     if(strcmp(symbol, "SPADE"))
-        return 4;    
+        return 4; 
+
+    return 69;   
 }
 
 ds_deck_list *create_deck_list()
 {
-     ds_deck_list *list = create_deck_list();
+     ds_deck_list *list = malloc(sizeof(ds_deck_list));
      list->total_decks = 0;
      list->deck_head = list->deck_tail = NULL;
 
@@ -64,13 +66,12 @@ void add_cards(ds_deck *deck, char *symbol, char val)
     
 }
 
-void CREATE_DECK(int size)
+ds_deck *CREATE_DECK(int size)
 {
     
     char *line = malloc(sizeof(char) * BUFF_SIZE), *p;
 
     int card_value;
-    char *card_symbol;
 
     ds_deck *deck = malloc(sizeof(ds_deck));
 
@@ -79,7 +80,7 @@ void CREATE_DECK(int size)
 
    // create_add_cards(deck);
    
-    while(size-- && fgets(line, BUFF_SIZE, stdin))
+    while(size && fgets(line, BUFF_SIZE, stdin))
     {
         line[strlen(line) -1] = '\0';
 
@@ -89,7 +90,7 @@ void CREATE_DECK(int size)
 
         if(card_value < 1 || card_value > 14)
         {
-            PRINT_INVALID_COMMAND; 
+            PRINT_INVALID_CARD; 
             continue;
         }
 
@@ -104,14 +105,12 @@ void CREATE_DECK(int size)
         
        if(!p || !is_in_the_list(p) || strtok(NULL, " "))
        {
-           PRINT_INVALID_COMMAND;
+           PRINT_INVALID_CARD;
            continue;
        }
-
-      add_cards(deck, p, card_value);
-
-      //free(card_symbol);
-
+    
+       add_cards(deck, p, card_value);
+       size--;
     }
     free(line);
     
@@ -131,6 +130,8 @@ void CREATE_DECK(int size)
     // free(card->prev);
 
     // free(deck);
+
+    return deck;
 }
 
 void ADD_DECK(ds_deck_list *deck_list, ds_deck *deck_add)
@@ -152,7 +153,7 @@ void ADD_DECK(ds_deck_list *deck_list, ds_deck *deck_add)
     // deck_list->deck_tail = deck_add;
 }
 
-void ADD_CARDS(ds_deck *deck, ds_deck **deck_add, int pos) 
+void ADD_CARDS(ds_deck *deck, ds_deck **deck_add) 
 {
     deck->card_tail = (*deck_add)->card_head;
     (*deck_add)->card_head->prev = deck->card_tail;
