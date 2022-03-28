@@ -1,3 +1,5 @@
+// Copyright 2022 Bogdan Dumitrescu
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,24 +7,24 @@
 
 int is_in_the_list(char *symbol)
 {
-    return !strcmp(symbol, "HEART") || 
-           !strcmp(symbol, "SPADE") || 
-           !strcmp(symbol, "DIAMOND") || 
+    return !strcmp(symbol, "HEART") ||
+           !strcmp(symbol, "SPADE") ||
+           !strcmp(symbol, "DIAMOND") ||
            !strcmp(symbol, "CLUB");
 }
 
 char symbol_conversion(char *symbol)
 {
-    if(!strcmp(symbol, "HEART"))
+    if (!strcmp(symbol, "HEART"))
         return 0;
-    if(!strcmp(symbol, "SPADE"))
+    if (!strcmp(symbol, "SPADE"))
         return 1;
-    if(!strcmp(symbol, "DIAMOND"))
+    if (!strcmp(symbol, "DIAMOND"))
         return 2;
-    if(!strcmp(symbol, "CLUB"))
-        return 3; 
+    if (!strcmp(symbol, "CLUB"))
+        return 3;
 
-    return 69;   
+    return -1;
 }
 
 ds_list *create_list()
@@ -39,7 +41,7 @@ ds_card_data *create_card(char symbol_conversed, char val)
     ds_card_data *data = malloc(sizeof(data));
     data->val = val;
     data->sym_conversion = symbol_conversed;
-    
+
     return data;
 }
 
@@ -50,18 +52,16 @@ ds_node *create_node(void *data)
     node->data = data;
 
     return node;
-
 }
 
 void add_to_list(ds_list *list, ds_node *node)
 {
-
     list->size++;
 
-    if(list->size == 1)
+    if (list->size == 1)
     {
         list->head = list->tail = node;
-        return ;
+        return;
     }
 
     node->prev = list->tail;
@@ -69,43 +69,43 @@ void add_to_list(ds_list *list, ds_node *node)
     list->tail = node;
 }
 
-
 ds_list *CREATE_DECK(int size)
 {
-    
     char *line = malloc(sizeof(char) * BUFF_SIZE), *p;
 
     int card_value;
 
     ds_list *deck = create_list();
-   
-    while(size && fgets(line, BUFF_SIZE, stdin))
+
+    while (size && fgets(line, BUFF_SIZE, stdin))
     {
-        line[strlen(line) -1] = '\0';
+        line[strlen(line) - 1] = '\0';
 
         p = strtok(line, " ");
 
         card_value = atoi(p);
 
-        if(card_value < 1 || card_value > 14)
+        if (card_value < 1 || card_value > 14)
         {
-            PRINT_INVALID_CARD; 
+            PRINT_INVALID_CARD;
             continue;
         }
 
         p = strtok(NULL, " ");
-        
-       if(!p || !is_in_the_list(p) || strtok(NULL, " "))
-       {
-           PRINT_INVALID_CARD;
-           continue;
-       }
-       ds_node *card = create_node(create_card(symbol_conversion(p), card_value));
-   
 
-       add_to_list(deck, card);
-                        
-       size--;
+        if (!p || !is_in_the_list(p) || strtok(NULL, " "))
+        {
+            PRINT_INVALID_CARD;
+            continue;
+        }
+
+        ds_card_data *data = create_card(symbol_conversion(p), card_value);
+
+        ds_node *card = create_node(data);
+
+        add_to_list(deck, card);
+
+        size--;
     }
     free(line);
 
@@ -114,11 +114,9 @@ ds_list *CREATE_DECK(int size)
 
 void ADD_CARDS(ds_list *deck, ds_list *deck_add)
 {
-        deck->size += deck_add->size;
+    deck->size += deck_add->size;
 
-        deck->tail->next = deck_add->head;
-        deck_add->head->prev = deck->tail;
-        deck->tail = deck_add->tail;
-
+    deck->tail->next = deck_add->head;
+    deck_add->head->prev = deck->tail;
+    deck->tail = deck_add->tail;
 }
-

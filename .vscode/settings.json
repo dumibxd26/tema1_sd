@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "declarations.h": "c"
+        "declarations.h": "c",
+        "del_from_lists.h": "c",
+        "commands.h": "c",
+        "stdlib.h": "c"
     }
 }

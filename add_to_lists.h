@@ -1,3 +1,8 @@
+// Copyright 2022 Bogdan Dumitrescu
+
+#ifndef ADD_TO_LISTS_H_
+#define ADD_TO_LISTS_H_
+
 #include "declarations.h"
 
 int is_in_the_list(char *symbol);
@@ -16,3 +21,4 @@ ds_node *create_node(void *data);
 
 void ADD_CARDS(ds_list *deck, ds_list *deck_add);
 
+#endif  // ADD_TO_LISTS_H_
