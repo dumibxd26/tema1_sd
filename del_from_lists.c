@@ -1,78 +1,63 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "declarations.h"
+#include "operations.h"
 
-// void DEL_DECK(ds_deck_list *deck_list, int pos)
-// {
-//     ds_deck *deck_aux = deck_list->deck_head;
+void delete_deck_cards(ds_list *deck)
+{
+    ds_node *deck_head_aux = deck->head;
 
-//     for(size_t i = 0; i < pos; i++)
-//         deck_aux = deck_aux->next;
+    for(int i = 0; i < deck->size - 1; i++)
+    {
+        free(deck_head_aux->data);
+        deck_head_aux = deck_head_aux->next;
+        free(deck_head_aux->prev);
+    } //printf("%hhu\n\n", ((ds_card_data *)(deck_head_aux->data))->val);
+    free(deck_head_aux->data);
+    free(deck_head_aux);
+}
 
-//     ds_card *card_aux = deck_aux->card_head;
+void DEL_DECK(ds_list *deck_list, int pos, int command_type)
+{
 
-//     for(size_t i = 0; i < DECK_LEN(deck_aux) - 1; i++)
-//     {
-//         card_aux = card_aux->next;
-//         free(card_aux->prev->data->symbol);
-//         free(card_aux);
-//     }
-//     free(card_aux->data->symbol);
-//     fre(card_aux);
+    ds_node *deck_node = goto_node(deck_list, pos);
 
-//     if(pos == 0)
-//     {
-//         deck_list->deck_head = deck_list->deck_head->next;
-//         free(deck_list->deck_head->prev);
-//     }
-//     else
-//     {
-//         deck_aux->prev->next = deck_aux->next;
-//         if(pos != DECK_NUMBER(deck_list))
-//             deck_aux->next->prev = deck_aux->prev;
+    if(command_type)
+        delete_deck_cards((ds_list *)deck_node->data);
+
+    if(!pos)
+    {
+        ds_node *aux = deck_list->head;
+        deck_list->head = deck_list->head->next;
+        if(deck_list->head)
+        deck_list->head->prev = NULL;
         
-//         free(deck_aux);
-//     }
+        free(aux->data);
+        free(aux);
+        deck_list->size--;
+        return;
+    }
 
-// }
+    deck_node->prev->next = deck_node->next;
+    if(pos != deck_list->size - 1)
+      deck_node->next->prev = deck_node->prev;
+    else
+      deck_list->tail = deck_list->tail->prev;
+    
+    free(deck_node->data);
+    free(deck_node);
 
-// void DEL_CARD(ds_deck_list *deck_list, int deck_pos, int card_pos) // aici mai modific
-// {
-//     ds_deck *deck_aux = deck_list->head;
+    deck_list->size--;
+}
 
-//     for(size_t i = 0; i < deck_pos; i++)
-//         deck_aux = deck_aux->next; 
+void DEL_CARD(ds_list *deck_list, ds_list *deck_elements, int deck_index, int card_index)
+{
+    // ds_node *deck_node = goto_node(deck_list, deck_index);
+    // ds_list *deck_elements = (ds_list *)deck_node->data;
 
-//     ds_card *card_aux = deck_aux->head;
 
-//     if(card_pos == 0)
-//         deck_aux->head = deck_aux->head->next
-//     else
-//     {
-//         for(size_t i = 0; i < card_pos; i++)
-//             card_aux = card_aux->next;
+    DEL_DECK(deck_elements, card_index, 0);
 
-//         card_aux->prev->next = card_aux->next;
-//         if(card_poz != DECK_LEN(deck_aux));
-//         card_aux->next->prev = card_aux->prev;
-//     }
-   
-//     free(card->aux->data);
-//     free(card->aux);
-
-//     deck_aux->deck_size--;
-
-//     if(!DECK_NUMBER(deck_aux))
-//     {
-//         if(!deck_pos)
-//             deck_list->head = deck_list->head->next;
-//         else
-//         {
-//             deck_aux->prev->next = deck_aux->next;
-//             if(deck_pos != DECK_NUMBER(deck_list))
-//             deck_aux->next->prev = deck_aux->prev;
-//         }
-
-//         free(deck_aux);
-
-//     }    
-
-// }
+    if(!deck_elements->size)
+    DEL_DECK(deck_list, deck_index, 0);
+}
