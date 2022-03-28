@@ -6,8 +6,10 @@
 int check_is_number(char *str)
 {
     int sz = strlen(str);
-
-    for(int i = 0; i < sz; i++)
+    int d = 0;
+    if(str[0] == '-')
+        d = 1;
+    for(int i = d; i < sz; i++)
         if(str[i] < '0' || str[i] > '9')
             return 0;
 
@@ -26,13 +28,13 @@ int check_no_params()
 }
 
 
-void check_one_param(char *p, int *first_param)
+void check_one_param(char *p, int *first_param, int *ok)
 {
     p = strtok(NULL, " ");
 
     if(!p)
     {
-        *first_param = -1;
+        *ok = 1;
         PRINT_INVALID_COMMAND;
         return;
     }
@@ -40,20 +42,20 @@ void check_one_param(char *p, int *first_param)
     if(check_is_number(p) && !strtok(NULL, " ")) {
         *first_param = atoi(p);
     } else {
-        *first_param = -1;
+        *ok = 1;
         PRINT_INVALID_COMMAND;
     }  
         
 
 }
 
-void check_two_params(char *p, int *first_param, int *second_param)
+void check_two_params(char *p, int *first_param, int *second_param, int *ok)
 {
     p = strtok(NULL, " ");
 
     if(!p)
     {
-        *first_param = -1;
+        *ok = 1;
         PRINT_INVALID_COMMAND;
         return;
     }
@@ -70,7 +72,7 @@ void check_two_params(char *p, int *first_param, int *second_param)
 
     if(!p)
     {
-        *second_param = -1;
+        *ok = 1;
         PRINT_INVALID_COMMAND;
         return;
     }
@@ -78,7 +80,7 @@ void check_two_params(char *p, int *first_param, int *second_param)
     if(check_is_number(p) && !strtok(NULL, " ")) {
         *second_param = atoi(p);
     } else {
-        *second_param = -1;
+        *ok = 1;
         PRINT_INVALID_COMMAND;
     }
      

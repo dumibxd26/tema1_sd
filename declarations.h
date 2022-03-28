@@ -7,32 +7,23 @@
 #include "stddef.h"
 
 typedef struct ds_card_data ds_card_data;
-typedef struct ds_card ds_card;
-typedef struct ds_deck ds_deck;
-typedef struct ds_deck_list ds_deck_list;
+typedef struct ds_list ds_list;
+typedef struct ds_node ds_node;
 
 struct ds_card_data {
 
-    char *symbol, val, sym_conversion;
+    char val, sym_conversion;
 };
 
-struct ds_card {
-
-    ds_card_data *data; 
-    ds_card *next, *prev;
+struct ds_node {
+    void *data;
+    ds_node *next, *prev;
 };
 
-struct ds_deck {
+struct ds_list {
 
-    ds_card *card_head, *card_tail;
-    int deck_size;
-    ds_deck *next, *prev;
-};
-
-struct ds_deck_list {
-
-    ds_deck *deck_head, *deck_tail;
-    int total_decks;
+    ds_node *head, *tail;
+    int size;
 };
 
 #endif

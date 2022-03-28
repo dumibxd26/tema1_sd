@@ -6,79 +6,78 @@
 int is_in_the_list(char *symbol)
 {
     return !strcmp(symbol, "HEART") || 
-           !strcmp(symbol, "CLUB") || 
+           !strcmp(symbol, "SPADE") || 
            !strcmp(symbol, "DIAMOND") || 
-           !strcmp(symbol, "SPADE");
+           !strcmp(symbol, "CLUB");
 }
 
 char symbol_conversion(char *symbol)
 {
-    if(strcmp(symbol, "HREAT"))
+    if(!strcmp(symbol, "HEART"))
+        return 0;
+    if(!strcmp(symbol, "SPADE"))
         return 1;
-    if(strcmp(symbol, "CLUB"))
+    if(!strcmp(symbol, "DIAMOND"))
         return 2;
-    if(strcmp(symbol, "DIAMOND"))
-        return 3;
-    if(strcmp(symbol, "SPADE"))
-        return 4; 
+    if(!strcmp(symbol, "CLUB"))
+        return 3; 
 
     return 69;   
 }
 
-ds_deck_list *create_deck_list()
+ds_list *create_list()
 {
-     ds_deck_list *list = malloc(sizeof(ds_deck_list));
-     list->total_decks = 0;
-     list->deck_head = list->deck_tail = NULL;
+    ds_list *list = malloc(sizeof(ds_list));
+    list->head = list->tail = NULL;
+    list->size = 0;
 
-     return list;
+    return list;
 }
 
-ds_card *create_card(char *symbol, char val)
+ds_card_data *create_card(char symbol_conversed, char val)
 {
-    ds_card *card = malloc(sizeof(ds_card));
-    card->next = card->prev = NULL;
-    card->data = malloc(sizeof(ds_card_data));
-    card->data->val = val;
-    card->data->sym_conversion = symbol_conversion(symbol);
-    card->data->symbol = malloc(strlen(symbol) + 1);
-    strcpy(card->data->symbol, symbol);
-
-    return card;
-}
-
-void add_cards(ds_deck *deck, char *symbol, char val)
-{
-
-    ds_card *card = create_card(symbol, val);
+    ds_card_data *data = malloc(sizeof(data));
+    data->val = val;
+    data->sym_conversion = symbol_conversed;
     
-    (deck->deck_size)++;
+    return data;
+}
 
-    if(deck->deck_size == 1)
+ds_node *create_node(void *data)
+{
+    ds_node *node = malloc(sizeof(ds_node));
+    node->next = node->prev = NULL;
+    node->data = data;
+
+    return node;
+
+}
+
+void add_to_list(ds_list *list, ds_node *node)
+{
+
+    list->size++;
+
+    if(list->size == 1)
     {
-        deck->card_head = deck->card_tail = card;
+        list->head = list->tail = node;
         return ;
     }
 
-    card->prev = deck->card_tail;
-    deck->card_tail->next = card;
-    deck->card_tail = card;
-    
+    node->prev = list->tail;
+    list->tail->next = node;
+    list->tail = node;
 }
 
-ds_deck *CREATE_DECK(int size)
+
+ds_list *CREATE_DECK(int size)
 {
     
     char *line = malloc(sizeof(char) * BUFF_SIZE), *p;
 
     int card_value;
 
-    ds_deck *deck = malloc(sizeof(ds_deck));
-
-    deck->deck_size = 0;
-    deck->card_head = deck->card_tail = NULL;
-
-   // create_add_cards(deck);
+    ds_list *deck = create_list();
    
     while(size && fgets(line, BUFF_SIZE, stdin))
     {
@@ -95,68 +94,31 @@ ds_deck *CREATE_DECK(int size)
         }
 
         p = strtok(NULL, " ");
-
-        // if(p)
-        // {
-        //     card_symbol = malloc(strlen(p) + 1);
-        //     strcpy(card_symbol, p);
-
-        // }
         
        if(!p || !is_in_the_list(p) || strtok(NULL, " "))
        {
            PRINT_INVALID_CARD;
            continue;
        }
-    
-       add_cards(deck, p, card_value);
+       ds_node *card = create_node(create_card(symbol_conversion(p), card_value));
+   
+
+       add_to_list(deck, card);
+                        
        size--;
     }
     free(line);
-    
-
-    // ds_card *card = deck->card_head;
-
-    // while(card->next)
-    // {
-    //     printf("%d %s\n", card->data->val, card->data->symbol);
-    //     card = card->next;
-    //     free(card->prev->data->symbol);
-    //     free(card->prev->data);
-    //     free(card->prev);
-    // }
-    // free(card->data->symbol); 
-    // free(card->prev->data);
-    // free(card->prev);
-
-    // free(deck);
 
     return deck;
 }
 
-void ADD_DECK(ds_deck_list *deck_list, ds_deck *deck_add)
+void ADD_CARDS(ds_list *deck, ds_list *deck_add)
 {
+        deck->size += deck_add->size;
 
-    deck_list->total_decks++;
-    if(deck_list->total_decks == 1)
-    {
-        deck_list->deck_head = deck_add;
-        return ;
-    }
- 
-    deck_add->prev = deck_list->deck_tail;
-    deck_list->deck_tail->next = deck_add;
-    deck_list->deck_tail = deck_add;
+        deck->tail->next = deck_add->head;
+        deck_add->head->prev = deck->tail;
+        deck->tail = deck_add->tail;
 
-    // deck_list->deck_tail->next = deck_add;
-    // deck_add->prev = deck_list->deck_tail;
-    // deck_list->deck_tail = deck_add;
 }
 
-void ADD_CARDS(ds_deck *deck, ds_deck **deck_add) 
-{
-    deck->card_tail = (*deck_add)->card_head;
-    (*deck_add)->card_head->prev = deck->card_tail;
-    deck->card_tail = (*deck_add)->card_tail;
-
-}

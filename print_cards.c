@@ -1,36 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "declarations.h"
+#include "print_cards.h"
 
-void SHOW_DECK(ds_deck *deck, int pos)
+const char symbol_value[4][8] = {"HEART", "SPADE", "DIAMOND", "CLUB"};
+void SHOW_DECK(ds_list *deck, int deck_index)
 {
-    ds_card *aux = deck->card_head;
+    printf("Deck %d:\n", deck_index);
 
-    printf("Deck %d:\n", pos);
+    ds_node *aux = deck->head;
 
-    for(int i = 0; i < deck->deck_size; i++)
-    {   
-        printf("\t%hhu %s\n", aux->data->val, aux->data->symbol);
-        aux = aux->next;
-    }
-    
+    for(int i = 0; i < deck->size; i++)
+        {
+            printf("\t%hhu %s\n", ((ds_card_data *)aux->data)->val, symbol_value[(int)((ds_card_data *)aux->data)->sym_conversion]);
+            aux = aux->next;
+        }
+
 }
 
-void SHOW_ALL(ds_deck_list *deck_list)
+void SHOW_ALL(ds_list *deck_list)
 {
-    ds_deck *deck_aux = deck_list->deck_head;
+    
+    ds_node *aux_head = deck_list->head;
 
-    for(int i = 0; i < deck_list->total_decks; i++)
-    {
-        printf("Deck %d:\n", i);
-        ds_card *card_aux = deck_aux->card_head;
-
-        for(int j = 0; j < deck_aux->deck_size; j++)
+    for(int i = 0; i < deck_list->size; i++)
         {
-            printf("\t%hhu %s\n", card_aux->data->val, card_aux->data->symbol);
-            card_aux = card_aux->next;
+            SHOW_DECK((ds_list *)(aux_head->data), i);
+            aux_head = aux_head->next;
         }
-          
-        deck_aux = deck_aux->next;
-    }
+        
 }
