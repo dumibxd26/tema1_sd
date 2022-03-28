@@ -1,5 +1,63 @@
-#define ONE_PARAM_WORK \
+#define ADD_DECK_COMMAND_HEADER\
+    int number_of_cards, ok = 0;\
+    check_one_param(p, &number_of_cards, &ok);\
+    if(ok)\
+        continue;\
+
+#define ONE_PARAM_COMMAND_HEADER\
     int number_of_cards, ok = 0;\
     check_one_param(p, &number_of_cards, &ok);\
         if(ok)\
             continue;
+
+#define ONE_INDEX_COMMAND_HEADER\
+    int deck_index, ok = 0;\
+    check_one_param(p, &deck_index, &ok);\
+    if(ok)\
+        continue;\
+    if(deck_index >= list_of_decks->size || deck_index < 0)\
+    {\
+        PRINT_DECK_INDEX_OUT_OF_BOUNDS;\
+        continue;\
+    }
+
+#define TWO_INDEX_COMMAND_HEADER\
+    int index1, index2, ok = 0;\
+    check_two_params(p, &index1, &index2, &ok);\
+    if (ok)\
+        continue;\
+    if (index1 >= list_of_decks->size || index1 < 0)\
+    {\
+        PRINT_DECK_INDEX_OUT_OF_BOUNDS;\
+        continue;\
+    }\
+    ds_node *deck_node = goto_node(list_of_decks, index1);\
+    ds_list *deck_elements = (ds_list *)deck_node->data;\
+    if (index2 >= deck_elements->size || index2 < 0)\
+    {\
+        PRINT_CARD_INDEX_OUT_OF_BOUNDS(index1);\
+        continue;\
+    }
+
+#define ADD_CARDS_COMMAND_HEADER\
+    int deck_index, number_of_cards, ok = 0;\
+    check_two_params(p, &deck_index, &number_of_cards, &ok);\
+    if (ok)\
+        continue;\
+    if (deck_index >= list_of_decks->size || deck_index < 0)\
+    {\
+        PRINT_DECK_INDEX_OUT_OF_BOUNDS;\
+        continue;\
+    }
+
+#define MERGE_DECKS_COMMAND_HEADER\
+    int deck_index1, deck_index2, ok = 0;\
+    check_two_params(p, &deck_index1, &deck_index2, &ok);\
+    if (ok)\
+        continue;\
+    if (deck_index1 >= list_of_decks->size || deck_index2 >= list_of_decks->size ||\
+        deck_index1 < 0 || deck_index2 < 0)\
+    {\
+        PRINT_DECK_INDEX_OUT_OF_BOUNDS;\
+        continue;\
+    }
